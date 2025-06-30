@@ -1,31 +1,18 @@
 import { ApolloServer } from "@apollo/server";
 import { schema} from "./schema.ts";
-import { MongoClient } from "mongodb";
-//import { RestaurantModel } from "./types.ts";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import { resolvers } from "./resolvers.ts";
+import {House,Character} from "./types.ts";
 
-const MONGO_URL = "mongodb+srv://ilopeza8:1234@cluster0.vbb5s.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-
-if (!MONGO_URL) {
-  throw new Error("MONGO_URL is not defined");
-}
-
-const mongoClient = new MongoClient(MONGO_URL);
-await mongoClient.connect();
-
-console.info("Connected to MongoDB");
-
-const mongoDB = mongoClient.db("BaseFInal");
-const ResturantsCollection = mongoDB.collection("restaurantes");
-
+const CollectionCharacters = Array<Character>;
+const CollectionHouses = Array<House> 
 const server = new ApolloServer({
   typeDefs:schema,
   resolvers,
 });
 
 const { url } = await startStandaloneServer(server, {
-  context: async () => ({ ResturantsCollection }),
+  context: async () => ({ CollectionCharacters,CollectionHouses}),
 });
 
 console.info(`Server ready at ${url}`);
